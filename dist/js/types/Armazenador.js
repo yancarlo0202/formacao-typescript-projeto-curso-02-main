@@ -1,22 +1,17 @@
 export class Armazernador {
-    private constructor() {}
-
-    static salvar(chave: string, valor: any): void {
+    constructor() { }
+    static salvar(chave, valor) {
         const valorComoString = JSON.stringify(valor);
         localStorage.setItem(chave, valorComoString);
     }
-
-    static obter<T>(chave: string, reviver?: (this: any, key: string, value: any) => any): T | null {
+    static obter(chave, reviver) {
         const valor = localStorage.getItem(chave);
-
         if (valor === null) {
             return null;
         }
-
         if (reviver) {
-            return JSON.parse(valor, reviver) as T;
+            return JSON.parse(valor, reviver);
         }
-
-        return JSON.parse(valor) as T;
+        return JSON.parse(valor);
     }
 }

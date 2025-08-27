@@ -1,8 +1,9 @@
-import { TipoTransacao } from "./TipoTransacao";
+import { Armazernador } from "./Armazenador.js";
+import { TipoTransacao } from "./TipoTransacao.js";
 export class Conta {
     nome;
-    saldo = JSON.parse(localStorage.getItem("saldo")) || 0;
-    transacoes = JSON.parse(localStorage.getItem("transacoes"), (key, value) => {
+    saldo = Armazernador.obter("saldo") || 0;
+    transacoes = Armazernador.obter(("transacoes"), (key, value) => {
         if (key === "data") {
             return new Date(value);
         }
@@ -10,6 +11,9 @@ export class Conta {
     }) || [];
     constructor(nome) {
         this.nome = nome;
+    }
+    getTitular() {
+        return this.nome;
     }
     getGruposTransacoes() {
         const gruposTransacoes = [];
@@ -48,7 +52,7 @@ export class Conta {
         }
         this.transacoes.push(novaTransacao);
         console.log(this.getGruposTransacoes());
-        localStorage.setItem("transacoes", JSON.stringify(this.transacoes));
+        Armazernador.salvar("transacoes", JSON.stringify(this.transacoes));
     }
     debitar(valor) {
         if (valor <= 0) {
@@ -58,14 +62,14 @@ export class Conta {
             throw new Error("Saldo insuficiente!");
         }
         this.saldo -= valor;
-        localStorage.setItem("saldo", this.saldo.toString());
+        Armazernador.salvar("saldo", this.saldo.toString());
     }
     depositar(valor) {
         if (valor <= 0) {
             throw new Error("O valor a ser depositado deve ser maior que zero!");
         }
         this.saldo += valor;
-        localStorage.setItem("saldo", this.saldo.toString());
+        Armazernador.salvar("saldo", this.saldo.toString());
     }
 }
 const conta = new Conta("Joana da Silva Oliveira");
